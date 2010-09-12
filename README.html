@@ -1,0 +1,278 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<meta name="generator" content="HTML Tidy, see www.w3.org">
+<title>RMOO Documentation</title>
+<meta name="author" content="Matthew Campbell">
+<meta name="date" content="$Date: 2000/10/18 21:22:30 $">
+<meta name="revision" content="$Revision: 1.1 $">
+<link rev="made" href="mailto:mattcampbell@pobox.com">
+</head>
+<body>
+<h1>RMOO 1.1</h1>
+
+<p>Originally by <a href="http://www.nmia.com/~tapia/">Ron
+Tapia</a> &lt;<a href=
+"mailto:tapia@nmia.com">tapia@nmia.com</a>&gt;<br>
+Maintained by <a href="http://www.pobox.com/~mattcampbell/">Matthew
+Campbell</a> &lt;<a href=
+"mailto:mattcampbell@pobox.com">mattcampbell@pobox.com</a>&gt;</p>
+
+<h2>Introduction</h2>
+
+<p>RMOO is a MOO client for Emacs. In addition to the basic
+features present in any MOO client, RMOO includes more advanced
+features, mainly the ability to edit MOO notes, mail, and code in
+separate Emacs buffers and to easily send these buffers back to the
+MOO. RMOO also includes support for the <a href= 
+"http://cs.cornell.edu/home/raman/emacspeak/">Emacspeak</a> audio
+desktop, so that people who are blind and use Emacspeak can more
+easily use MOOs and other similar servers.</p>
+
+<p>You can always find the latest version of RMOO, along with
+pre-built Red Hat packages, at the <a href= 
+"http://www.pobox.com/~mattcampbell/rmoo.html">RMOO home
+page</a>.</p>
+
+<h2>Release History</h2>
+
+<dl>
+<dt>Version 1.1 (released October 18, 2000)</dt>
+
+<dd>
+<p>This is a maintenance release. In this release, I removed the
+activity alert that Emacspeak users used to get while they were
+typing in an RMOO buffer, because it caused problems with Emacs
+20.5 and later. I also updated everything to reflect my new email
+address and Web site address. Finally, I quit using Latte and now
+write the HTML code myself.</p>
+</dd>
+
+<dt>Version 1.0 (released January 17, 2000)</dt>
+
+<dd>
+<p>This is a <em>major</em> release, and a lot has changed. I
+reworked the installation procedure to make it more like the
+standard procedure for Emacs packages and open-source software in
+general. I also improved support for Emacspeak and fixed other
+miscellaneous problems. In particular, I added special sounds that
+RMOO uses when running in conjunction with Emacspeak. I got them
+from a collection of <a href= 
+"http://www.geocities.com/Hollywood/Lot/4847/cow.html">cow
+sounds</a> that I found on the Web. I hope they will make your
+MOOing experience more fun.</p>
+</dd>
+
+<dt>May 26, 1999</dt>
+
+<dd>
+<p>In local editing, I added two new commands: C-c C-c now uploads
+the current buffer to the MOO and destroys the window, and C-c C-]
+destroys the window without uploading the buffer.</p>
+</dd>
+
+<dt>May 23, 1999</dt>
+
+<dd>
+<p>There is a new variable, <code>rmoo-send-always-goto-end</code>,
+which, if set to <code>t</code>, will make RMOO always go to the
+end of the buffer after sending a line, no matter where in the
+buffer the user was.</p>
+</dd>
+
+<dt>March 21, 1999</dt>
+
+<dd>
+<p>In this release, I have one specific goal: to make the RMOO
+extension for Emacspeak consistently notify the user of activity in
+a MOO buffer which is not his current buffer, and to make it
+consistently read that activity to the user when he switches to the
+MOO buffer. I believe I have achieved this goal.</p>
+</dd>
+
+<dt>March 1, 1999</dt>
+
+<dd>
+<ul>
+<li>Fixed a typo in the installation section of the README.</li>
+
+<li>Improved Emacspeak support with the help of <a href= 
+"http://cs.cornell.edu/home/raman/">T. V. Raman</a>.</li>
+
+<li>Fixed C-c C-q command to provide reasonable feedback after
+disconnecting from the MOO.</li>
+
+<li>Added this "Release History" section to the README file.</li>
+
+<li>Converted this README file to <a href="http://www.latte.org">
+Latte</a>, the Language for Transforming Text. Latte's primary use
+now is to generate HTML, and that is why I am using it. <a href= 
+"http://lynx.browser.org">Lynx</a> is now used to generate the
+plain-text version of this document. I am also using <a href= 
+"http://www.w3.org/People/Raggett/tidy">HTML Tidy</a> to keep the
+generated markup clean.</li>
+
+<li>Put the files in this package under RCS control, with the
+exception of the README and README.html files which are generated
+from the Latte source.</li>
+</ul>
+</dd>
+
+<dt>February 20, 1999</dt>
+
+<dd>
+<ul>
+<li>New unofficial maintainer.</li>
+
+<li>Added support for the Emacspeak audio desktop and fixed a bug
+in the process.</li>
+
+<li>Moved default RMOO directory from ~/emacs/rmoo to ~/rmoo for
+easier installation.</li>
+
+<li>Updated installation and W3 sections in the README.</li>
+
+<li>Added "Introduction" and "Getting Started" sections.</li>
+
+<li>Finally, this package is now in a tar.gz file instead of an
+uncompressed tar file.</li>
+</ul>
+</dd>
+
+<dt>October 9, 1994</dt>
+
+<dd>Original version by Ron Tapia.</dd>
+</dl>
+
+<h2>Requirements</h2>
+
+<p>To use RMOO, you should have <a href= 
+"http://www.gnu.org/software/emacs/">GNU Emacs</a> version 20 or
+later. I have not tested RMOO with XEmacs recently, though it may
+work. To take advantage of some features of the MOO Client Protocol
+(MCP), you will need <a href= 
+"http://www.cs.indiana.edu/elisp/w3/docs.html">Emacs/W3</a> as
+well.</p>
+
+<h2>Installation</h2>
+
+<p>To install RMOO from the source package, follow these steps:</p>
+
+<ul>
+<li>
+<p>Unpack the rmoo-1.1.tar.gz file.</p>
+</li>
+
+<li>
+<p>Change to the new RMOO source directory (rmoo-1.1) and type the
+following commands as any user:</p>
+
+<p><kbd>./configure</kbd><br>
+<kbd>make</kbd></p>
+</li>
+
+<li>
+<p>Now, as root, type this while in the RMOO source directory:
+<kbd>make install</kbd></p>
+</li>
+
+<li>Add the following line to your .emacs file or your
+/usr/share/emacs/site-lisp/site-start.el file: 
+
+<p><code>(require 'rmoo-autoload)</code></p>
+</li>
+</ul>
+
+<p>You can also get a Red Hat package that is ready to install and
+use from the <a href=
+"http://www.pobox.com/~mattcampbell/rmoo.html">RMOO home
+page</a>.</p>
+
+<h3>Upgrading from pre-1.0 versions of RMOO</h3>
+
+<p>For users of RMOO versions before 1.0, you need to do a little
+preparation before installing the new version. When you installed
+an older version of RMOO, you had to add a block of code from a
+file called fragment-of-.emacs to your .emacs file. You must now
+remove this code, because it has moved into the main RMOO code.
+This block started with the following:</p>
+
+<pre>
+;;
+;; Change this if you want to keep the rmoo source somewhere else.
+;;
+</pre>
+
+<p>and ended with the following:</p>
+
+<pre>
+(rmoo-load-libs)
+</pre>
+
+<p>Once you have removed this block, you can continue with the
+normal RMOO installation procedure. At this point, you will not
+have the shortcut key (<kbd>C-c m</kbd>) that you used to use to
+start RMOO. TO get this back, refer to the Tips and Tricks
+section.</p>
+
+<h2>Getting Started</h2>
+
+<p>Once you have installed RMOO using the instructions provided
+above, you can connect to a MOO any time by pressing <kbd>M-x
+rmoo</kbd>. When you are prompted for a MOO world, you can either
+enter one, optionally using Emacs's completion facility to help
+you, or you can press Enter without entering anything. If you do
+the latter, you will be prompted for the site and port, in addition
+to login name and password.</p>
+
+<h3>World List Basics</h3>
+
+<p>To add a new MOO world, type <kbd>M-x
+rmoo-worlds-add-new-moo</kbd>, and follow the prompts. Then save
+the world list by typing <kbd>M-x rmoo-worlds-save</kbd>.</p>
+
+<h2>Local Editing</h2>
+
+<p>One of the great benefits of RMOO is the ability to edit MOO
+mail, code, or other text in a standard Emacs buffer, with all of
+the editing commands available. This is a great improvement over
+the primitive line editor provided by most MOOs. To turn on local
+editing on a standard LambdaCore-based MOO, type:</p>
+
+<p><kbd>@edit-options +local</kbd></p>
+
+<p>A new Emacs buffer will now be opened when you want to edit
+something on the MOO. RMOO provides instructions for sending the
+text to the MOO or closing the window without sending.</p>
+
+<h2>Tips and Tricks</h2>
+
+<p>If you have trouble with RMOO leaving the point at the end of
+the line you just sent, you may find it helpful to add the
+following to your .emacs file:</p>
+
+<p><code>(setq rmoo-send-always-goto-end t)</code></p>
+
+<p>This will cause RMOO to always go to the end of the buffer after
+sending a line. You can also configure RMOO so that it will not
+send your input to the server unless you are on the last line of
+the buffer. This is helpful for Emacspeak users who review the MOO
+buffer with the cursor movement keys, and then start typing without
+going to the end of the buffer. To turn on this feature, add this
+to your .emacs file:</p>
+
+<p><code>(setq rmoo-send-require-last-line t)</code></p>
+
+<p>You may find it helpful to have a shortcut key that you can use
+to start RMOO. To add this feature, add the following to your
+.emacs file:</p>
+
+<p><code>(global-set-key "\C-cm" 'rmoo)</code></p>
+
+<p>You can now start RMOO with <code>C-c m</code>.</p>
+
+<p>Enjoy,<br>
+Matt Campbell</p>
+</body>
+</html>
+

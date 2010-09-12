@@ -1,0 +1,82 @@
+$Id: LICENSE,v 1.1 1999/12/27 00:46:45 mattcamp Exp $
+
+The following is an email I received from Ron Tapia, original author
+of RMOO, when I contacted him regarding my modifications to the code.
+I'm treating this as the license for RMOO, since he didn't give it a
+formal license (like GPL or BSD).  The message is unedited, including
+a quotation of my original message, which explains my motivation for
+taking on this project.  In keeping with Ron's request, I have been
+using the Revision Control System (RCS) to track my changes to the
+code.  The RCS logs are at the bottom of the source files.
+
+Matthew Campbell
+
+--
+
+From: Ron Tapia <tapia@nmia.com>
+To: Matthew Campbell <mattcamp@feist.com>
+Subject: Re: RMOO
+Date: Mon, 1 Mar 1999 00:35:42 -0700 (MST)
+
+Hi,
+
+I haven't been actively working on rmoo (or MOO'ing for that matter) for
+several years.
+
+You are welcome to extend the code however you like. All that I ask is
+that it be made reasonably clear in the source (and anywhere else
+appropriate) what code I wrote and what code/changes you're responsible
+for. 
+
+Cheers,
+
+Ron
+Hagbard@LambdaMOO
+
+==
+On Sat, 27 Feb 1999, Matthew Campbell wrote:
+
+> Hello Ron,
+> 
+> I found a copy of RMOO, your MOO client for Emacs, at
+> ftp://tecfa.unige.edu/pub/software/unix/mud-clients/rmoo.tar.  It seems
+> quite old (dated October 9, 1994), and I have found a bug in it.  Have you
+> released a newer version, or have you quit working on it?
+> 
+> The main reason I am writing to you about RMOO is that I have extended it to
+> support Emacspeak, a speech-enabling subsystem for Emacs.  Through
+> Emacspeak, blind users can use Emacs, and Unix in general, and get the
+> speech feedback that they need.  So I have wrote an extension to RMOO that
+> makes it speak when it is run in conjuction with Emacspeak.  The bug I
+> mentioned earlier was in rmoo.el, in the function rmoo-handle-text.  The
+> line which should have read:
+> 
+> (run-hooks 'rmoo-handle-text-hooks)
+> 
+> actually read:
+> 
+> (run-hooks rmoo-handle-text-hooks)
+> 
+> This prevented my extension from working, because it adds itself as a hook
+> in rmoo-handle-text-hooks.  So rather than releasing my extension and a
+> patch for RMOO, I thought it would be easier to put RMOO--with the bug
+> fixed--along with my Emacspeak extension in my own rmoo.tar.gz file.  In
+> addition to fixing the bug and adding Emacspeak support, I changed the
+> default RMOO directory from ~/emacs/rmoo to ~/rmoo to make installation
+> easier.  I updated your README file to reflect what I had done and expanded
+> it to include a "Getting Started" section for new users.  And I recently
+> converted the README file to HTML.
+> 
+> If you are still developing and maintaining RMOO, I am willing to give you
+> my code.  If not, may I take over the project?  Who will own the copyright?
+> (I noticed that none of your files have a copyright in them anywhere.)
+> 
+> Thank you,
+> Matt Campbell
+> 
+
+ When you say "I wrote a program that crashed Windows", people just
+ stare at you blankly and say "Hey, I got those with the system, *for
+ free*".  -  Linus Torvalds
+
+
