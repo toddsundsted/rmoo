@@ -36,7 +36,9 @@
 (defvar rmoo-code-default-directory "~/" "The place where you keep your moo code.")
 (defvar rmoo-code-mode-hooks nil)
 
-
+(defconst rmoo-code-font-lock-keywords
+  '(("\\<\\(if\\|elseif\\|else\\|endif\\|for\\|in\\|endfor\\|while\\|endwhile\\|try\\|except\\|finally\\|endtry\\|fork\\|endfork\\|break\\|continue\\|return\\)\\>" 1 font-lock-keyword-face)
+    ("#[0-9]+" . font-lock-reference-face)))
 
 (defconst rmoo-code-reserved-words
   '(("if[ (]" "for[ (]" "while[ (]" "fork[ (]" "try"    "else" "except"
@@ -97,6 +99,8 @@ Commands:
       (progn
 	(setq rmoo-mode-syntax-table (make-syntax-table))
 	(set-syntax-table rmoo-mode-syntax-table)
+	(modify-syntax-entry ?* ". 23")
+	(modify-syntax-entry ?/ ". 14")
 	(modify-syntax-entry ?_ "w")
 	(modify-syntax-entry ?\[ "(]")
 	(modify-syntax-entry ?\] ")["))
@@ -105,6 +109,14 @@ Commands:
   (make-local-variable 'rmoo-expansion-macro-name)
   (make-local-variable 'indent-line-function)
   (setq indent-line-function 'rmoo-code-indent-line)
+  ; Setting up syntax recognition
+  (make-local-variable 'comment-start)
+  (make-local-variable 'comment-end)
+  (make-local-variable 'comment-start-skip)
+  (setq comment-start "/* "
+	comment-end " */"
+	comment-start-skip "/\\*[ \n\t]+")
+  (setq font-lock-defaults '((rmoo-code-font-lock-keywords) nil t))
   (setq default-directory rmoo-code-default-directory)
   (message (substitute-command-keys "Use \\[rmoo-upload-buffer-directly] to send, \\[rmoo-upload-and-destroy] to send and destroy, \\[rmoo-destroy] to abort..."))
   (run-hooks 'rmoo-code-mode-hooks))
@@ -293,7 +305,7 @@ Commands:
 ;; Assume that files that end with .moo are MOO code.
 ;;
 (or (assoc "\\.moo$" auto-mode-alist)
-  (setq auto-mode-alist (cons '("\\.moo$" . moo-code-mode)
+  (setq auto-mode-alist (cons '("\\.moo$" . rmoo-code-mode)
                               auto-mode-alist)))
 ;;
 ;; X stuff
