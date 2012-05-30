@@ -1,5 +1,4 @@
-;;
-;; MOO Interactive Mode - a major mode for interacting with MOOs.
+;;; rmoo.el --- a major mode for interacting with MOOs.
 ;;
 ;; Original Author: Ron Tapia <tapia@nmia.com>
 ;; $Author: mattcampbell $
