@@ -38,7 +38,7 @@
 
 (defconst rmoo-code-font-lock-keywords
   '(("\\<\\(if\\|elseif\\|else\\|endif\\|for\\|in\\|endfor\\|while\\|endwhile\\|try\\|except\\|finally\\|endtry\\|fork\\|endfork\\|break\\|continue\\|return\\)\\>" 1 font-lock-keyword-face)
-    ("#[0-9]+" . font-lock-reference-face)))
+    ("#-?[0-9]+" . font-lock-reference-face)))
 
 (defconst rmoo-code-reserved-words
   '(("if[ (]" "for[ (]" "while[ (]" "fork[ (]" "try"    "else" "except"
