@@ -524,7 +524,7 @@ Keymap:
 ;;
 (defun rmoo-send-string (string proc)
   "Send STRING as input to PROC"
-  (send-string proc (concat string "\n")))
+  (comint-send-string proc (concat string "\n")))
 
 (defun rmoo-eobp ()
   (cond ((eobp)
@@ -609,7 +609,7 @@ on the last line of the buffer.")
 
 (defun rmoo-send-here (string)
   "Send STRING as input to rmoo-world-here."
-  (send-string (get rmoo-world-here 'process) (concat string "\n")))
+  (comint-send-string (get rmoo-world-here 'process) (concat string "\n")))
 
 (defun rmoo-recenter ()
   "If we should recenter, recenter."

@@ -28,7 +28,7 @@
 		  (list (completing-read 
 			 "Verb: " 
 			 'rmoo-objects-verb-completion-function))))
-    (send-string nil (concat rmoo-extras-verb-edit-command " " verb "\n")))
+    (comint-send-string nil (concat rmoo-extras-verb-edit-command " " verb "\n")))
 
 (defun rmoo-extras-read-property (string)
   (setq rmoo-objects-current-moo rmoo-world-here)
@@ -39,8 +39,7 @@
   "Sends a command to a MOO asking for a property.
 If you're lucky, it may even display the verb code in a Text Mode buffer."
   (interactive (list (rmoo-extras-read-property "Property: ")))
-  (send-string nil (concat rmoo-extras-prop-edit-command " " prop "\n")))
-
+  (comint-send-string nil (concat rmoo-extras-prop-edit-command " " prop "\n")))
 
 (defun rmoo-@paste-kill (&optional prefix)
   "Send whatever's in the kill ring to the MOO, using #8855's @paste command."
