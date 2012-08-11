@@ -70,7 +70,7 @@ PACKAGE = @PACKAGE@
 VERSION = @VERSION@
 lispdir = @lispdir@
 
-lisp_LISP = emacspeak-rmoo.el prefix.el rmoo-code.el rmoo-display-jtext.el   rmoo-extras.el rmoo-list.el rmoo-local-edit.el rmoo-mail.el rmoo-mcp.el   rmoo-menus.el rmoo-objects.el rmoo-rmail.el rmoo-text.el rmoo.el   rmoo-autoload.el
+lisp_LISP = emacspeak-rmoo.el prefix.el moocode-mode.el rmoo-display-jtext.el   rmoo-extras.el rmoo-list.el rmoo-local-edit.el rmoo-mail.el rmoo-mcp.el   rmoo-menus.el rmoo-objects.el rmoo-rmail.el rmoo-text.el rmoo.el   rmoo-autoload.el
 
 BUILT_SOURCES = README
 SOURCES = $(lisp_LISP) $(BUILT_SOURCES) README.html
@@ -87,11 +87,10 @@ CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 LISP =  $(lisp_LISP)
 
-ELCFILES =  emacspeak-rmoo.elc prefix.elc rmoo-code.elc \
-rmoo-display-jtext.elc rmoo-extras.elc rmoo-list.elc \
-rmoo-local-edit.elc rmoo-mail.elc rmoo-mcp.elc rmoo-menus.elc \
-rmoo-objects.elc rmoo-rmail.elc rmoo-text.elc rmoo.elc \
-rmoo-autoload.elc
+ELCFILES =  emacspeak-rmoo.elc prefix.elc moocode-mode.elc \
+rmoo-display-jtext.elc rmoo-extras.elc rmoo-list.elc rmoo-local-edit.elc \
+rmoo-mail.elc rmoo-mcp.elc rmoo-menus.elc rmoo-objects.elc rmoo-rmail.elc \
+rmoo-text.elc rmoo.elc rmoo-autoload.elc
 DATA =  $(sound_DATA)
 
 DIST_COMMON =  README Makefile.am Makefile.in aclocal.m4 configure \

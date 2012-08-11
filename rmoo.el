@@ -492,7 +492,7 @@ Keymap:
 	(list
 	"rmoo-mcp"
 	"prefix"
-	"rmoo-code"
+	"moocode-mode"
 	"rmoo-text"
 	"rmoo-mail"
 	"rmoo-objects"

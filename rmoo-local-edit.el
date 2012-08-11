@@ -53,7 +53,7 @@
 
 (defun rmoo-local-edit-cleanup-function ()
   (let ((world rmoo-world-here))
-    (rmoo-code-mode)
+    (moocode-mode)
     (setq rmoo-world-here world)
     (goto-char (point-min))
     (put rmoo-world-here 'goto-function 'switch-to-buffer-other-window)

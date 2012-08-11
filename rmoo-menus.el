@@ -6,7 +6,7 @@
 ;; $Revision: 1.1 $
 
 (require 'rmoo)
-(require 'rmoo-code)
+(require 'moocode-mode)
 (require 'rmoo-objects)
 
 ;;
@@ -71,10 +71,10 @@
 
 ;; Menu for rmoo-code-mode
 ;;
-(defvar rmoo-code-mode-menu-map (make-sparse-keymap "RMOO-Code"))
-(define-key rmoo-code-mode-map  [menu-bar rmoo-code] (cons "RMOO-Code" rmoo-code-mode-menu-map))
-(define-key rmoo-code-mode-menu-map [rmoo-retarget] '("Retarget" . rmoo-retarget))
-(define-key rmoo-code-mode-menu-map [rmoo-oupload] '("Upload" . rmoo-upload-buffer-directly))
+;(defvar rmoo-code-mode-menu-map (make-sparse-keymap "RMOO-Code"))
+;(define-key rmoo-code-mode-map  [menu-bar rmoo-code] (cons "RMOO-Code" rmoo-code-mode-menu-map))
+;(define-key rmoo-code-mode-menu-map [rmoo-retarget] '("Retarget" . rmoo-retarget))
+;(define-key rmoo-code-mode-menu-map [rmoo-oupload] '("Upload" . rmoo-upload-buffer-directly))
 
 ;;
 ;; Menu for rmoo-mail-mode

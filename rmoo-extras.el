@@ -9,7 +9,7 @@
 ;;
 
 (require 'rmoo)
-(require 'rmoo-code)
+(require 'moocode-mode)
 (require 'rmoo-objects)
 
 (defvar rmoo-extras-verb-edit-command "@edit" "Command to use to get verb code.")

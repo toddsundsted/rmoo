@@ -5,10 +5,10 @@
 # $Date: 2000/10/18 21:24:35 $
 # $Revision: 1.6 $
 
-lisp_LISP = emacspeak-rmoo.el prefix.el rmoo-code.el rmoo-display-jtext.el \
-  rmoo-extras.el rmoo-list.el rmoo-local-edit.el rmoo-mail.el rmoo-mcp.el \
-  rmoo-menus.el rmoo-objects.el rmoo-rmail.el rmoo-text.el rmoo.el \
-  rmoo-autoload.el
+lisp_LISP = emacspeak-rmoo.el prefix.el moocode-mode.el \
+  rmoo-display-jtext.el rmoo-extras.el rmoo-list.el rmoo-local-edit.el \
+  rmoo-mail.el rmoo-mcp.el rmoo-menus.el rmoo-objects.el rmoo-rmail.el \
+  rmoo-text.el rmoo.el rmoo-autoload.el
 BUILT_SOURCES = README
 SOURCES = $(lisp_LISP) $(BUILT_SOURCES) README.html
 AUTOMAKE_OPTIONS = foreign

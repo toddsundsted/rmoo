@@ -235,7 +235,7 @@ the name of the request, but some requests can be grouped together."
 ;;
 (defun rmoo-mcp-cleanup-edit-program ()
   (let ((world rmoo-world-here))
-    (rmoo-code-mode)
+    (moocode-mode)
     (goto-char (point-max))
     (insert ".\n")
     (goto-char (point-min))
