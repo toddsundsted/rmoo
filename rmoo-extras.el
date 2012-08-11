@@ -53,9 +53,8 @@ If you're lucky, it may even display the verb code in a Text Mode buffer."
 ;; Interface to moo.el
 ;;
 (define-key rmoo-interactive-mode-map "\^c\^v" 'rmoo-extras-get-verb)
-(define-key rmoo-interactive-mode-map "\^c\^f" 'rmoo-extras-get-prop)
-(define-key rmoo-interactive-mode-map "\^c\^p" 'rmoo-@paste-kill)
-
+(define-key rmoo-interactive-mode-map "\^c\^p" 'rmoo-extras-get-prop)
+;;(define-key rmoo-interactive-mode-map "\^c\^p" 'rmoo-@paste-kill)
 ;;(define-key rmoo-interactive-mode-map "\^c\^t" 'rmoo-extras-get-text-prop)
 ;;(define-key rmoo-interactive-mode-map "\^c\^j" 'rmoo-extras-get-jtext)
 
