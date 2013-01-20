@@ -134,7 +134,7 @@ Keymap:
 		  (setq rmoo-output (cdr rmoo-output))
 		  (while rmoo-output
 		    (set-buffer (process-buffer proc))
-		    (setq line (car rmoo-output))
+		    (setq line (ansi-color-apply (car rmoo-output)))
 		    (setq rmoo-output (cdr rmoo-output))
 		    (funcall (get rmoo-world-here 'output-function) line))))
 	      (if moving (goto-char (process-mark proc))))
