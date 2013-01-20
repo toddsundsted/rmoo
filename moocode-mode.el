@@ -88,7 +88,7 @@
     ("^\\s-*@\\w+\\b"
      . font-lock-preprocessor-face)
     ;; Types
-    ("\\<\\(ERR\\|FLOAT\\|INT\\|LIST\\|NUM\\|OBJ\\|STR\\)\\>"
+    ("\\<\\(ERR\\|FLOAT\\|INT\\|LIST\\|MAP\\|NUM\\|OBJ\\|STR\\)\\>"
      . font-lock-constant-face)
     ;; Keywords
     ("^\\s-*\\(?:break\\|continue\\|e\\(?:lse\\(?:if\\)?\\|nd\\(?:fork?\\|if\\|while\\)\\)\\|fork?\\|if\\|return\\|while\\)\\>"
@@ -267,9 +267,10 @@
     (modify-syntax-entry ?\] ")[" st)
     (modify-syntax-entry ?\( "()" st)
     (modify-syntax-entry ?\) ")(" st)
-    ;; MOO uses c-style comments /* ... */
-    (modify-syntax-entry ?/ ". 14" st)
-    (modify-syntax-entry ?* ". 23" st)
+    ;; Both /* ... */ and // style comments
+    (modify-syntax-entry ?\/ ". 124" st)
+    (modify-syntax-entry ?* ". 23b" st)
+    (modify-syntax-entry ?\n "> " st)
     st)
   "Syntax table for MOO code major mode.")
 
