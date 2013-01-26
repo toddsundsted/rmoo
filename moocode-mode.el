@@ -1,8 +1,10 @@
 ;;; moocode-mode.el - Major mode for editing LambdaMOO code files
 ;;
-;; Copyright (C) 2012 Rob Myers <rob@robmyers.org>
+;; Copyright (C) 2012-2013 Rob Myers <rob@robmyers.org>
 ;; moocode-font-lock-(maybe)-notedit adapted from ruby-mode.el
 ;; Copyright (C) 1994-2008 Free Software Foundation, Inc.
+;; smie code adapted from octave-mode.el
+;; Copyright (C) 1997, 2001-2013 Free Software Foundation, Inc.
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -27,12 +29,19 @@
 ;;    (require 'moocode-mode)
 ;;    (add-to-list 'auto-mode-alist '("\\.moo$" . moocode-mode))
 
-(require 'rmoo)
-
 ;;; TODO:
 ;;
-;; ;"comments"
 ;; strings as object descriptors in declarations
+;; string comments
+;; Short form error handing
+;; templates
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Libraries
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'rmoo)
+(require 'smie)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Customization
@@ -48,11 +57,6 @@
   :type 'boolean
   :group 'moocode-mode)
 
-(defcustom moocode-mode-hook nil
-  "Hook run when entering MOO code major mode."
-  :type 'hook
-  :group 'moocode-mode)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Syntax highlighting
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -63,23 +67,23 @@
     (let ((from (point)))
       (forward-line 1)
       (when (re-search-forward "^\\.$" limit t)
-	(beginning-of-line)
-	(set-match-data (list from (point)))
-	t))))
+        (beginning-of-line)
+        (set-match-data (list from (point)))
+        t))))
 
 (defun moocode-font-lock-maybe-notedit (limit)
   (let (from)
     (save-excursion
       (when (and (re-search-backward "^\\(@notedit\\>\\|\\.$\\)" nil t)
-		 (string= (match-string 1) "@notedit"))
-	(end-of-line)
-	(setq from (point))))
+                 (string= (match-string 1) "@notedit"))
+        (end-of-line)
+        (setq from (point))))
     (if (and from (and (re-search-forward "^\\(@notedit\\>\\|\\.$\\)" nil t)
-		       (string= (match-string 1) ".")))
-	(save-excursion
-	  (beginning-of-line)
-	  (set-match-data (list beg (point)))
-	  t)
+                       (string= (match-string 1) ".")))
+        (save-excursion
+          (beginning-of-line)
+          (set-match-data (list beg (point)))
+          t)
       nil)))
 
 (defconst moocode-font-lock-keywords
@@ -91,7 +95,7 @@
     ("\\<\\(ERR\\|FLOAT\\|INT\\|LIST\\|MAP\\|NUM\\|OBJ\\|STR\\)\\>"
      . font-lock-constant-face)
     ;; Keywords
-    ("^\\s-*\\(?:break\\|continue\\|e\\(?:lse\\(?:if\\)?\\|nd\\(?:fork?\\|if\\|while\\)\\)\\|fork?\\|if\\|return\\|while\\)\\>"
+    ("^\\s-*\\(?:break\\|continue\\|e\\(?:lse\\(?:if\\)?\\|nd\\(?:fork?\\|if\\|try\\|while\\)\\|xcept\\)\\|fork?\\|if\\|return\\|try\\|while\\)\\>"
      ;; Yes, zero. Weird
      . (0 font-lock-keyword-face))
     ;; Single local variable declarations
@@ -137,72 +141,98 @@
 ;; Indentation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun moocode-indent-incp ()
-  "Whether the current line should result in the indentation level increasing."
-  (looking-at "\\s-*\\(?:else\\(?:if\\s-*\\)?\\|for\\(?:k?\\s-*\\)\\|if\\s-*\\|while\\)\\>"))
+(require 'smie)
 
-(defun moocode-indent-decp ()
-  "Whether the current line should result in the indentation level decreasing."
-  (looking-at "\\s-*\\(?:e\\(?:lse\\(?:if\\)?\\|nd\\(?:fork?\\|if\\|while\\)\\)\\)"))
+(defconst moocode-operator-table
+  '((assoc ";") ;; Did have "\n" in octave, but seems OK without it
+    (assoc ",")
+    (assoc "*" "/" "%")
+    (assoc "+" "-")
+    (nonassoc "==" "!=" "<" "<=" ">" ">=" "in")
+    (assoc "&&" "||")
+    (nonassoc ":" ".")
+    (nonassoc "?" "|")
+    (assoc "=")))
 
-(defun moocode-blank-linep ()
-  "Check whether the current line is empty or consists entirely of whitespace."
-  (looking-at "^\\s-*$"))
+(defconst moocode-smie-bnf-table
+  '((atom)
+    ;; We can't distinguish the first element in a sequence with
+    ;; precedence grammars, so we can't distinguish the condition
+    ;; if the `if' from the subsequent body, for example.
+    ;; This has to be done later in the indentation rules.
+    (exp
+     ;; We seem to get away without this as it doesn't affect indentation
+     ;;(exp "\n" exp)
+     ;; We need to mention at least one of the operators in this part
+     ;; of the grammar: if the BNF and the operator table have
+     ;; no overlap, SMIE can't know how they relate.
+     (exp ";" exp)
+     ("try" exp "except" exp "endtry")
+     ("try" exp "finally" exp "endtry")
+     ("unwind_protect" exp
+      "unwind_protect_cleanup" exp "end_unwind_protect")
+     ("unwind_protect" exp "unwind_protect_cleanup" exp "end")
+     ("for" exp "endfor")
+     ("fork" exp "endfork")
+     ("if" exp "endif")
+     ("if" exp "else" exp "endif")
+     ("if" exp "elseif" exp "else" exp "endif")
+     ("if" exp "elseif" exp "elseif" exp "else" exp "endif")
+     ("while" exp "endwhile")
+     )))
 
-(defun moocode-property-edit-linep ()
-  "Check whether the current line is the start of a propedit block."
-    (looking-at "^\\s-*\\(\\(?:@\\(?:answer\\|notedit\\|send\\)\\)\\|@edit\\s-+\\w+\\.\\w+\\)"))
+(defconst moocode-smie-grammar
+  (smie-prec2->grammar
+   (smie-merge-prec2s
+    (smie-bnf->prec2 moocode-smie-bnf-table
+                     ;; We need this to resolve a conflict
+                     '((assoc ";"))) ;; Did have "\n" in Octave
+    (smie-precs->prec2 moocode-operator-table))))
 
-(defun moocode-point-in-property-editp (rlimit)
-  "Reverse from (point), checking if a property @edit began before rlimit."
-  ;; In verb code downloaded from the MOO, we'll hit (point-min) quickly
-  ;; In files of @create @edit etc. we'll hit an @... quickly
-  ;; So this isn't quite as bad as it may look
-  (save-excursion
-    (beginning-of-line)
-    (let ((is nil)
-	  (keep-searching t))
-      (while (and (> (point) rlimit)
-		  keep-searching)
-	;; Looking at a line starting with @? Whatever it is, we should finish
-	(when (looking-at "^\\(\\s-*@\\|\\.$\\)")
-	  (setf keep-searching nil)
-	  ;; Looking at the start of a property @edit?
-	  (when (moocode-property-edit-linep)
-	    (setf is t)))
-	(forward-line -1))
-      is)))
+(defun moocode-smie-forward-token ()
+  (skip-chars-forward " \t")
+  (cond
+   ((and (looking-at "$")
+         ;; Ignore newline if it's within parentheses
+         (prog1 (let ((ppss (syntax-ppss)))
+                  (not (and (nth 1 ppss)
+                            (eq ?\( (char-after (nth 1 ppss))))))
+           (forward-comment (point-max))))
+    ;; Why bother distinguishing \n and ;?
+    ";") ;;"\n"
+   ((looking-at ";[ \t]*\\($\\)")
+    ;; Combine the ; with the subsequent \n.
+    (goto-char (match-beginning 1))
+    (forward-comment 1)
+    ";")
+   (t
+    (smie-default-forward-token))))
 
-(defun moocode-skip-blank-lines-backward ()
-  "Skip lines that are empty or consist entirely of whitespace."
-  (while (and (not (bobp))
-	      (moocode-blank-linep))
-    (forward-line -1)))
+(defun moocode-smie-backward-token ()
+  (let ((pos (point)))
+    (forward-comment (- (point)))
+    (cond
+     ((and (not (eq (char-before) ?\;)) ;Coalesce ";" and "\n".
+           (> pos (line-end-position))
+           t
+           ;; Ignore it if it's within parentheses.
+           (let ((ppss (syntax-ppss)))
+             (not (and (nth 1 ppss)
+                       (eq ?\( (char-after (nth 1 ppss)))))))
+      (skip-chars-forward " \t")
+      ;; Why bother distinguishing \n and ;?
+      ";") ;;"\n"
+     (t
+      (smie-default-backward-token)))))
 
-(defun moocode-indent-current-line ()
-  "Calculate the indentation for the current line and indent it."
-  (beginning-of-line)
-  (delete-horizontal-space)
-   (let ((indent 0))
-     (if (moocode-indent-decp)
-	 (decf indent moocode-indent))
-     (save-excursion
-       (if (not (eq (forward-line -1) -1))
-	   (progn
-	     (moocode-skip-blank-lines-backward)
-	     (back-to-indentation)
-	     (if (moocode-indent-incp)
-		 (incf indent moocode-indent))
-	     (incf indent (current-indentation)))
-	 ;; Otherwise
-	 (setf indent 0)))
-     (indent-to indent)))
-
-(defun moocode-indent-line ()
-  "Indent the current line as MOO code."
-  (interactive)
-  (when (not (moocode-point-in-property-editp (point-min)))
-      (moocode-indent-current-line)))
+(defun moocode-smie-rules (kind token)
+  (pcase (cons kind token)
+    (`(:elem . basic) moocode-indent)
+    ;; This rule is needed to align the contents of blocks properly
+    ;; Otherwise they line up to the token after e.g. if rather than indenting
+    (`(:after . ";")
+     (when (smie-rule-parent-p "if" "while" "else" "elseif" "for" "fork" "try")
+       (smie-rule-parent moocode-indent)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Check for missing semicolons
@@ -219,7 +249,7 @@
 (defun moocode-skip-edit-forward ()
   "Skip most of the body of an @edit (assuming it contains one entry block)."
   (while (and (not (eobp))
-	      (not (looking-at "^\\.$")))
+              (not (looking-at "^\\.$")))
     (forward-line 1)))
 
 (defun moocode-check-semicolons ()
@@ -229,28 +259,16 @@
     (beginning-of-buffer)
     (while (not (eobp))
       (cond ((moocode-edit-propertyp) (moocode-skip-edit-forward))
-	    ((moocode-blank-linep) nil) ;; Just skip the line
-	    (t (when (and (moocode-line-needs-semicolonp)
-			  (not (moocode-line-ends-with-semicolonp))
-			  (y-or-n-p "Add semicolon to end of line?"))
-		 (end-of-line)
-		 (insert ";")
-		 (beginning-of-line))))
+            ((moocode-blank-linep) nil) ;; Just skip the line
+            (t (when (and (moocode-line-needs-semicolonp)
+                          (not (moocode-line-ends-with-semicolonp))
+                          (y-or-n-p "Add semicolon to end of line?"))
+                 (end-of-line)
+                 (insert ";")
+                 (beginning-of-line))))
       (forward-line 1)))
   ;; Don't leave the y-or-n-p message showing after finishing 
   (message nil))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Electricity
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun moocode-electric-semicolon ()
-  "Insert a semicolon and indent the line."
-  (interactive)
-  (insert ";")
-  (when moocode-electric-mode
-    (moocode-indent-line)
-    (end-of-line)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Syntax table
@@ -262,11 +280,6 @@
     (modify-syntax-entry ?_ "w" st)
     (modify-syntax-entry ?@ "w" st)
     (modify-syntax-entry ?$ "w" st)
-    ;; Brackets
-    (modify-syntax-entry ?\[ "(]" st)
-    (modify-syntax-entry ?\] ")[" st)
-    (modify-syntax-entry ?\( "()" st)
-    (modify-syntax-entry ?\) ")(" st)
     ;; Both /* ... */ and // style comments
     (modify-syntax-entry ?\/ ". 124" st)
     (modify-syntax-entry ?* ". 23b" st)
@@ -281,7 +294,6 @@
 (defvar moocode-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map "\C-j" 'newline-and-indent)
-    (define-key map ";" 'moocode-electric-semicolon)
     (define-key map "\C-c;" 'moocode-check-semicolons)
     (define-key map "\^c\^c" 'rmoo-upload-and-destroy)
     (define-key map "\^c\^s" 'rmoo-upload-buffer-directly)
@@ -293,15 +305,22 @@
 ;; Define the mode
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define-derived-mode moocode-mode fundamental-mode "MOO"
+(define-derived-mode moocode-mode prog-mode "MOO"
   "Major mode for editing LambdaMOO programming language files.
 \\{moocode-mode-map}"
   :group 'moocode-mode
   (use-local-map moocode-mode-map)
   (set (make-local-variable 'font-lock-defaults)
        '(moocode-font-lock-keywords))
-  (set (make-local-variable 'indent-line-function)
-       'moocode-indent-line))
+  ;; The convention of using strings as comments breaks smie-indent-comment
+  (set (make-local-variable 'comment-start) "/*")
+  (set (make-local-variable 'comment-end) "*/")
+  (set (make-local-variable 'electric-indent-chars)
+       (cons ?\; electric-indent-chars))
+  (set (make-local-variable 'electric-layout-rules) '((?\; . after)))
+  (smie-setup moocode-smie-grammar #'moocode-smie-rules
+              :forward-token  #'moocode-smie-forward-token
+              :backward-token #'moocode-smie-backward-token))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Provide the mode
