@@ -95,7 +95,7 @@
     ("\\<\\(ERR\\|FLOAT\\|INT\\|LIST\\|MAP\\|NUM\\|OBJ\\|STR\\)\\>"
      . font-lock-constant-face)
     ;; Keywords
-    ("^\\s-*\\(?:break\\|continue\\|e\\(?:lse\\(?:if\\)?\\|nd\\(?:fork?\\|if\\|try\\|while\\)\\|xcept\\)\\|fork?\\|if\\|return\\|try\\|while\\)\\>"
+    ("^\\s-*\\(?:break\\|continue\\|e\\(?:lse\\(?:if\\)?\\|nd\\(?:fork?\\|if\\|try\\|while\\)\\|xcept\\)\\|f\\(?:inally\\|ork?\\)\\|if\\|return\\|try\\|while\\)\\>"
      ;; Yes, zero. Weird
      . (0 font-lock-keyword-face))
     ;; Single local variable declarations
@@ -231,7 +231,7 @@
     ;; This rule is needed to align the contents of blocks properly
     ;; Otherwise they line up to the token after e.g. if rather than indenting
     (`(:after . ";")
-     (when (smie-rule-parent-p "if" "while" "else" "elseif" "for" "fork" "try")
+     (when (smie-rule-parent-p "if" "while" "else" "elseif" "for" "fork" "try" "finally")
        (smie-rule-parent moocode-indent)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
