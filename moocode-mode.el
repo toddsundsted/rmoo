@@ -231,7 +231,7 @@
     ;; This rule is needed to align the contents of blocks properly
     ;; Otherwise they line up to the token after e.g. if rather than indenting
     (`(:after . ";")
-     (when (smie-rule-parent-p "if" "while" "else" "elseif" "for" "fork" "try" "finally")
+     (when (smie-rule-parent-p "if" "while" "else" "elseif" "for" "fork" "try" "except" "finally")
        (smie-rule-parent moocode-indent)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
