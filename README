@@ -107,6 +107,19 @@ Installation
      * Add the following line to your .emacs file or your
        /usr/share/emacs/site-lisp/site-start.el file:
        (require 'rmoo-autoload)
+
+   To install from the git repository:
+     * Generate aclocal.m4 and Makefile.in files along with the configure
+       script:
+       $ aclocal
+       $ autoconf
+       $ automake
+     * Generate Makefile:
+       $ ./configure
+     * Build:
+       $ make
+     * Install (as root):
+       # make install
        
    You can also get a Red Hat package that is ready to install and use
    from the [14]RMOO home page.
